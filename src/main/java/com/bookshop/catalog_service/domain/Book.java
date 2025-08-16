@@ -4,12 +4,12 @@ import java.time.Instant;
 import java.util.Objects;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.*;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -43,12 +43,18 @@ public class Book {
         @LastModifiedDate
         private Instant lastModifiedDate;
 
+        @CreatedBy
+        String createdBy;
+
+        @LastModifiedBy
+        String lastModifiedBy;
+
         @Version
         private int version;
 
         public Book() {}
 
-        public Book(Long id, String isbn, String title, String author, Double price, String publisher, Instant createdDate, Instant lastModifiedDate, int version) {
+        public Book(Long id, String isbn, String title, String author, Double price, String publisher, Instant createdDate, Instant lastModifiedDate, String createdBy, String lastModifiedBy, int version) {
                 this.id = id;
                 this.isbn = isbn;
                 this.title = title;
@@ -57,11 +63,13 @@ public class Book {
                 this.publisher = publisher;
                 this.createdDate = createdDate;
                 this.lastModifiedDate = lastModifiedDate;
+                this.createdBy = createdBy;
+                this.lastModifiedBy = lastModifiedBy;
                 this.version = version;
         }
 
         public static Book of(String isbn, String title, String author, Double price, String publisher) {
-                return new Book(null, isbn, title, author, price, publisher, null, null, 0);
+                return new Book(null, isbn, title, author, price, publisher, null, null, null, null, 0);
         }
 
         public Long getId() {
@@ -126,6 +134,22 @@ public class Book {
 
         public void setLastModifiedDate(Instant lastModifiedDate) {
                 this.lastModifiedDate = lastModifiedDate;
+        }
+
+        public String getCreatedBy() {
+                return createdBy;
+        }
+
+        public void setCreatedBy(String createdBy) {
+                this.createdBy = createdBy;
+        }
+
+        public String getLastModifiedBy() {
+                return lastModifiedBy;
+        }
+
+        public void setLastModifiedBy(String lastModifiedBy) {
+                this.lastModifiedBy = lastModifiedBy;
         }
 
         public int getVersion() {

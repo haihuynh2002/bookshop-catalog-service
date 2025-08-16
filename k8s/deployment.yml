@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-service
+  labels:
+    app: catalog-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalog-service
+  template:
+    metadata:
+      labels:
+        app: catalog-service
+    spec:
+      containers:
+        - name: catalog-service
+          image: catalog-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9001
+          env:
+            - name: BPL_JVM_THREAD_COUNT
+              value: '10'
+            - name: SPRING_PROFILES_ACTIVE
+              value: testdata
+          volumeMounts:
+            - name: catalog-config-volume
+              mountPath: /workspace/config
+          lifecycle:
+            preStop:
+              exec:
+                command: [ 'sh', '-c', 'sleep 5' ]
+      volumes:
+        - name: catalog-config-volume
+          configMap:
+            name: catalog-config

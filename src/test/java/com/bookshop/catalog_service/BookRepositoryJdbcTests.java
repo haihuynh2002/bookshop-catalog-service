@@ -10,10 +10,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Import(DataConfig.class)
@@ -28,6 +31,16 @@ public class BookRepositoryJdbcTests {
     private TestEntityManager entityManager;
 
     @Test
+    void whenCreateBookNotAuthenticatedThenNoAuditMetadata() {
+        var bookToCreate = Book.of("1232343456", "Title",
+                "Author", 12.90, "Polarsophia");
+        var createdBook = bookRepository.save(bookToCreate);
+
+        assertThat(createdBook.getCreatedBy()).isNull();
+        assertThat(createdBook.getLastModifiedBy()).isNull();
+    }
+
+    @Test
     void findAllBooks() {
         var book1 = Book.of("1234561235", "Title", "Author", 12.90, "Polarsophia");
         var book2 = Book.of("1234561236", "Another Title", "Author", 12.90, "Polarsophia");
@@ -36,9 +49,23 @@ public class BookRepositoryJdbcTests {
 
         Iterable<Book> actualBooks = bookRepository.findAll();
 
-        Assertions.assertThat(StreamSupport.stream(actualBooks.spliterator(), true)
+        assertThat(StreamSupport.stream(actualBooks.spliterator(), true)
                 .filter(book -> book.getIsbn().equals(book1.getIsbn()) || book.getIsbn().equals(book2.getIsbn()))
                 .collect(Collectors.toList())).hasSize(2);
     }
+
+    @Test
+    @WithMockUser("john")
+    void whenCreateBookAuthenticatedThenAuditMetadata() {
+        var bookToCreate = Book.of("1232343457", "Title",
+                "Author", 12.90, "Polarsophia");
+        var createdBook = bookRepository.save(bookToCreate);
+
+        assertThat(createdBook.getCreatedBy())
+                .isEqualTo("john");
+        assertThat(createdBook.getLastModifiedBy())
+                .isEqualTo("john");
+    }
+
 
 }

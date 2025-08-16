@@ -5,6 +5,7 @@ import com.bookshop.catalog_service.domain.Book;
 import com.bookshop.catalog_service.domain.BookService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,4 +43,10 @@ public class BookController {
     public Book put(@PathVariable String isbn, @Valid @RequestBody Book book) {
         return bookService.editBookDetails(isbn, book);
     }
+    
+    @GetMapping("/username")
+    public String getUser(@AuthenticationPrincipal String username) {
+        return username;
+    }
+
 }
