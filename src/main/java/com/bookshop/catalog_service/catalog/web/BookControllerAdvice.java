@@ -1,9 +1,11 @@
-package com.bookshop.catalog_service.web;
+package com.bookshop.catalog_service.catalog.web;
 
-import com.bookshop.catalog_service.domain.BookNotFoundException;
-import com.bookshop.catalog_service.domain.BookAlreadyExistsException;
-import com.bookshop.catalog_service.domain.BookNotFoundException;
+import com.bookshop.catalog_service.catalog.domain.BookNotFoundException;
+import com.bookshop.catalog_service.catalog.domain.BookAlreadyExistsException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @RestControllerAdvice
 public class BookControllerAdvice {
@@ -39,5 +42,26 @@ public class BookControllerAdvice {
             errorsMap.put(fieldName, errorMessage);
         });
         return errorsMap;
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleConstraintViolationException(
+            ConstraintViolationException ex) {
+
+        Map<String, String> errors = new HashMap<>();
+        Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
+
+        for (ConstraintViolation<?> violation : violations) {
+            String fieldName = getFieldNameFromPath(violation.getPropertyPath().toString());
+            String errorMessage = violation.getMessage();
+            errors.put(fieldName, errorMessage);
+        }
+        return errors;
+    }
+
+    private String getFieldNameFromPath(String propertyPath) {
+        String[] parts = propertyPath.split("\\.");
+        return parts[parts.length - 1];
     }
 }

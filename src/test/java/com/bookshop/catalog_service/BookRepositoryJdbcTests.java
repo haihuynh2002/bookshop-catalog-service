@@ -1,9 +1,8 @@
 package com.bookshop.catalog_service;
 
 import com.bookshop.catalog_service.config.DataConfig;
-import com.bookshop.catalog_service.domain.Book;
-import com.bookshop.catalog_service.domain.BookRepository;
-import org.assertj.core.api.Assertions;
+import com.bookshop.catalog_service.catalog.domain.Book;
+import com.bookshop.catalog_service.catalog.domain.BookRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

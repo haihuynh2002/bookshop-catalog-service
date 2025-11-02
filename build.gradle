@@ -13,12 +13,18 @@ java {
 	}
 }
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 repositories {
 	mavenCentral()
 }
 
 ext {
-	set('springCloudVersion', "2021.0.9")
+	set('springCloudVersion', "2025.0.0")
 	set('testcontainersVersion', '1.19.8')
 	set('testKeycloakVersion', '2.3.0')
 }
@@ -29,7 +35,16 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.flywaydb:flyway-database-postgresql'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'io.github.openfeign.form:feign-form:3.8.0'
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+
 	runtimeOnly 'org.postgresql:postgresql'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'

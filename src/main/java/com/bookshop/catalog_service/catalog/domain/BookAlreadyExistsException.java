@@ -1,4 +1,4 @@
-package com.bookshop.catalog_service.domain;
+package com.bookshop.catalog_service.catalog.domain;
 
 public class BookAlreadyExistsException extends RuntimeException{
     public BookAlreadyExistsException(String isbn) {

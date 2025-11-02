@@ -21,8 +21,23 @@ public class SecurityConfig {
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http
 				.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers(HttpMethod.GET, "/", "/books/**").permitAll()
-						.anyRequest().hasRole("employee")
+                        .requestMatchers(HttpMethod.GET, "/",
+                                "/books/**",
+                                "/categories/**",
+                                "/reviews/**",
+                                "/types/**",
+                                "/inventories/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/",
+                                "/inventories/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/reviews/**")
+                        .hasRole("customer")
+                        .requestMatchers(HttpMethod.PUT, "/reviews/**")
+                        .hasRole("customer")
+                        .requestMatchers(HttpMethod.DELETE, "/reviews/**")
+                        .hasRole("customer")
+                        .anyRequest().hasAnyRole("admin", "employee")
 				)
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
 				.sessionManagement(sessionManagement ->

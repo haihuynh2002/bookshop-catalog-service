@@ -1,10 +1,9 @@
 package com.bookshop.catalog_service;
 
-import com.bookshop.catalog_service.domain.Book;
+import com.bookshop.catalog_service.catalog.domain.Book;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dasniko.testcontainers.keycloak.KeycloakContainer;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
